@@ -58,7 +58,11 @@ class MainCardState extends State<MainCard> {
         );
       },
     );*/
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ShowContactScreen(oHalde["kontaktName"])));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ShowContactScreen(oHalde["kontaktName"])));
   }
 
   @override
@@ -69,46 +73,59 @@ class MainCardState extends State<MainCard> {
       return GestureDetector(
           onTap: _onTapped,
           child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20)
-            ),
-            color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
-            children: <Widget>[
-                (contact.avatar != null)
-                    ? CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 35,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(35),
-                            child: Image.memory(contact.avatar)),
-                      )
-                    : CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 35,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(35),
-                            child: Icon(
-                              Icons.people_outline,
-                              color: Colors.white,
-                            )),
-                      ),
-                Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(contact.displayName,
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.normal)),
-                        Text("Du hast dir "+ ((oHalde["geliehen"] == 0) ? "keinen Gegenstand" : ((oHalde["geliehen"] == 1) ? "einen Gegenstand" :  oHalde["geliehen"].toString()+ " Gegenstände ")) + " geliehen."),
-                        Text("Du hast "+ ((oHalde["verliehen"] == 0) ? "keinen Gegenstand" : ((oHalde["verliehen"] == 1) ? "einen Gegenstand" :  oHalde["verliehen"].toString()+ " Gegenstände ")) + " verliehen.")
-                      ],
-                    )),
-            ],
-          ),
+                  children: <Widget>[
+                    (contact.avatar != null)
+                        ? CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 35,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(35),
+                                child: Image.memory(contact.avatar)),
+                          )
+                        : CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 35,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(35),
+                                child: Icon(
+                                  Icons.people_outline,
+                                  color: Colors.white,
+                                )),
+                          ),
+                    Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(contact.displayName,
+                                style: TextStyle(
+                                    fontSize: 20, fontStyle: FontStyle.normal)),
+                            Text("Du hast dir " +
+                                ((oHalde["geliehen"] == 0)
+                                    ? "keinen Gegenstand"
+                                    : ((oHalde["geliehen"] == 1)
+                                        ? "einen Gegenstand"
+                                        : oHalde["geliehen"].toString() +
+                                            " Gegenstände ")) +
+                                " geliehen."),
+                            Text("Du hast " +
+                                ((oHalde["verliehen"] == 0)
+                                    ? "keinen Gegenstand"
+                                    : ((oHalde["verliehen"] == 1)
+                                        ? "einen Gegenstand"
+                                        : oHalde["verliehen"].toString() +
+                                            " Gegenstände ")) +
+                                " verliehen.")
+                          ],
+                        )),
+                  ],
+                ),
               )));
     } else {
       return Card(

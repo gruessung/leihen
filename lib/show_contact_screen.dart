@@ -2,6 +2,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:oweapp4/Database.dart';
 import 'package:oweapp4/HaldeModel.dart';
+import 'package:intl/intl.dart';
 
 class ShowContactScreen extends StatefulWidget {
   final String kontaktName;
@@ -52,7 +53,6 @@ class ShowContactScreenState extends State<ShowContactScreen> {
     return Colors.green;
   }
 
-
   @override
   Widget build(BuildContext context) {
     _loadContact();
@@ -75,39 +75,73 @@ class ShowContactScreenState extends State<ShowContactScreen> {
                       Halde halde = snapshot.data[index];
                       return Column(
                         children: <Widget>[
-                          Card(
-                              child: Column(
-                            children: <Widget>[
-                              Container(
-                                height: 10,
-                                child: LinearProgressIndicator(
-                                  backgroundColor: _getColor(halde),
-                                  value: 0,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 5),
+                            child: Card(
+                                child: Column(
+                              children: <Widget>[
+                                Container(
+                                  height: 5,
+                                  child: LinearProgressIndicator(
+                                    backgroundColor: _getColor(halde),
+                                    value: 0,
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text("BILD"),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text(halde.betreff,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontStyle:
-                                                      FontStyle.normal))
-                                        ],
-                                      ),
-                                    )
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text("BILD"),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(halde.betreff,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontStyle:
+                                                        FontStyle.normal)),
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 0)),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.calendar_today,
+                                                  size: 15,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 2),
+                                                ),
+                                                Text(
+                                                    DateFormat('dd.MM.yyyy')
+                                                        .format(DateTime
+                                                            .fromMillisecondsSinceEpoch(
+                                                                halde.faellig)),
+                                                    style:
+                                                        TextStyle(fontSize: 15))
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )),
+                              ],
+                            )),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(2),
                           )

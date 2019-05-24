@@ -81,6 +81,9 @@ class NewItemInputState extends State<NewItemInput> {
       });
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,7 +160,17 @@ class NewItemInputState extends State<NewItemInput> {
                             bSwitch = val;
                           });
                         },
-                        secondary: const Icon(Icons.account_balance))
+                        secondary: const Icon(Icons.account_balance)),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 0, vertical: 5)),
+                    Divider(),
+                    GestureDetector(
+                      child: CircleAvatar(
+                          backgroundColor: Colors.blue,
+                          radius: 20,
+                          child: Icon(Icons.camera)),
+                    ),
                   ],
                 ),
               )),

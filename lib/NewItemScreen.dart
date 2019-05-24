@@ -71,7 +71,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   Contact contact = _contacts?.elementAt(index);
                   return GestureDetector(
-                    onTap: () => Navigator.push(
+                    onTap: () => Navigator.push( 
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>

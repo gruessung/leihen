@@ -9,35 +9,33 @@ class ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     if (contact == null) {
       return Text("Fehler beim Laden");
     }
 
     return Card(
-        child: Row(
-          children: <Widget>[
-            (contact.avatar != null)
-                ? CircleAvatar(
-              radius: 35,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(35),
-                  child: Image.memory(contact.avatar)),
-            )
-                : CircleAvatar(
-              radius: 35,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(35),
-                  child: Icon(
-                    Icons.people_outline,
-                    color: Colors.white,
-                  )),
-            ),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(contact.displayName,
-                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.normal))),
-          ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        color: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              (contact.avatar != null)
+                  ? CircleAvatar(
+                      backgroundColor: Colors.blueAccent,
+                      radius: 15,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(35),
+                          child: Image.memory(contact.avatar)),
+                    )
+                  : null,
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text((contact.displayName.length > 40) ? contact.displayName.substring(0, 40) : contact.displayName,
+                      style: TextStyle(
+                          fontSize: 16, fontStyle: FontStyle.normal))),
+            ],
+          ),
         ));
   }
 }
