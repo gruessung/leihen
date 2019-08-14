@@ -1,4 +1,3 @@
-
 import 'package:oweapp4/HaldeModel.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -46,14 +45,17 @@ class DBProvider {
     db.insert("Halde", halde.toMap());
   }
 
+  deleteHalde(Halde halde) async {
+    final db = await database;
+    db.delete('Halde', where: 'id = ' + halde.id.toString());
+    return true;
+  }
+
   Future<dynamic> getHomeScreenCards() async {
-
-
     final db = await database;
     var res = await db.rawQuery('SELECT t.kontaktName, '
         '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 0) AS geliehen, '
         '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 1) AS verliehen FROM Halde t GROUP BY t.kontaktName');
-
 
     var list = <Map>[];
     res.forEach((c) {
@@ -62,21 +64,30 @@ class DBProvider {
     return list;
   }
 
+  /**
+   * Holt alle Datensätze zu einem Kontakt aus der Datenbank
+   * @return List<Halde>
+   */
   Future<List<Halde>> getContactItems({String kontaktName}) async {
     final db = await database;
-    var res = await db.query('Halde');
+    var res =
+        await db.query('Halde', where: "kontaktName = '" + kontaktName + "'");
 
+    print("Starte: getContactItems");
 
     List<Halde> list;
+    print("Anzahl Gesamt: " + res.length.toString());
     if (res.isNotEmpty) {
+      print("res.isNotEmpty");
       list = res.map((c) {
-        if (c['kontaktName'] == kontaktName){
-          return Halde.fromJson(c);
-        }
-      } ).toList();
+        return Halde.fromJson(c);
+      }).toList();
     } else {
+      print('res.empty!');
       list = [];
     }
+
+    print("Anzahl der gefundenen Datensätze: " + list.length.toString());
 
     return list;
   }

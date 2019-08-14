@@ -21,6 +21,8 @@ dependencies:
     sdk: flutter
   sqflite: any
   path:
+  camera:
+  swipedetector: ^1.2.0
 
   path_provider: any
   contacts_service: ^0.2.6

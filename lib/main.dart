@@ -15,13 +15,11 @@ import 'package:oweapp4/NewItemScreen.dart';
 import 'Database.dart';
 
 void main() {
-
   runApp(MyApp());
 }
 
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,18 +31,13 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatefulWidget {
-
-
   @override
   State<StatefulWidget> createState() {
     return new HomeScreenState();
   }
-
 }
 
 class HomeScreenState extends State<HomeScreen> {
-
-
   Future<dynamic> _homeScreenData;
 
   _getHomeScreenData() async {
@@ -53,16 +46,23 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  @override
+  void initState() {
+    print("Call initState()");
+    _getHomeScreenData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("Call build()");
     _getHomeScreenData();
     return Scaffold(
       appBar: AppBar(
         title: Text('Ich leihe dir'),
       ),
       body: FutureBuilder<dynamic>(
-          future: _homeScreenData,
+          future: this._homeScreenData,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
@@ -78,11 +78,10 @@ class HomeScreenState extends State<HomeScreen> {
           }),
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () =>
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => NewItemScreen()))),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => NewItemScreen()))),
     );
   }
 }
