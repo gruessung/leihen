@@ -20,18 +20,21 @@ class ContactCard extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           child: Row(
             children: <Widget>[
-              (contact.avatar != null)
-                  ? CircleAvatar(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      radius: 15,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(35),
-                          child: Image.memory(contact.avatar)),
-                    )
-                  : null,
+              CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor,
+                radius: 15,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(35),
+                    child: (contact.avatar.isNotEmpty)
+                        ? Image.memory(contact.avatar)
+                        : Icon(Icons.face_outlined, color: Colors.white)),
+              ),
               Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: Text((contact.displayName.length > 40) ? contact.displayName.substring(0, 40) : contact.displayName,
+                  child: Text(
+                      (contact.displayName.length > 40)
+                          ? contact.displayName.substring(0, 40)
+                          : contact.displayName,
                       style: TextStyle(
                           fontSize: 16, fontStyle: FontStyle.normal))),
             ],
