@@ -24,13 +24,12 @@ class _NewItemSelectContactScreenState
     if (permissionStatus == PermissionStatus.granted && _contacts == null) {
 
       var contacts = await ContactsService.getContacts(query: "");
-
       /*contacts.toList().sort((a, b) {
         return a.displayName
             .toLowerCase()
             .compareTo(b.displayName.toLowerCase());
       });*/
-      print(contacts);
+
 
       setState(() {
         _contacts = contacts;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:oweapp4/Database.dart';
 import 'package:oweapp4/HaldeModel.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:image_crop/image_crop.dart';
 
@@ -25,9 +26,40 @@ class ShowContactScreenState extends State<ShowContactScreen> {
   final String kontaktName;
   Contact contact = null;
 
+  PermissionStatus permissionStatusHolder = null;
+
+
+  Future<PermissionStatus> _getContactPermission() async {
+    PermissionStatus permission = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.contacts);
+    if (permission != PermissionStatus.granted &&
+        permission != PermissionStatus.disabled &&
+        permission != PermissionStatus.restricted) {
+      Map<PermissionGroup, PermissionStatus> permissionStatus =
+      await PermissionHandler()
+          .requestPermissions([PermissionGroup.contacts]);
+      return permissionStatus[PermissionGroup.contacts] ??
+          PermissionStatus.unknown;
+    } else {
+      return permission;
+    }
+  }
+
+
+
+
+
+
   _loadContact() async {
+    if (permissionStatusHolder == null) {
+      PermissionStatus permissionStatus = await _getContactPermission();
+      permissionStatusHolder = permissionStatus;
+    }
+
+
     if (contact == null && data == null) {
 
+      /*
       Future<Iterable<Contact>> contacts =
           ContactsService.getContacts(query: kontaktName, withThumbnails: true);
       contacts.then((val) {
@@ -35,7 +67,7 @@ class ShowContactScreenState extends State<ShowContactScreen> {
         setState(() {
           contact = val.elementAt(0);
         });
-      });
+      });*/
 
       setState(() {
         data = DBProvider.db.getContactItems(kontaktName: kontaktName);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:oweapp4/HaldeModel.dart';
 import 'package:oweapp4/show_contact_screen.dart';
 import 'package:oweapp4/widgets/contact_card.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MainCard extends StatefulWidget {
   final Map<String, dynamic> oHalde;
@@ -24,17 +25,40 @@ class MainCardState extends State<MainCard> {
   final BuildContext context;
   Contact contact;
   String sKontaktName;
+  PermissionStatus permissionStatusHolder = null;
+
+
+  Future<PermissionStatus> _getContactPermission() async {
+    PermissionStatus permission = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.contacts);
+    if (permission != PermissionStatus.granted &&
+        permission != PermissionStatus.disabled &&
+    permission != PermissionStatus.restricted) {
+      Map<PermissionGroup, PermissionStatus> permissionStatus =
+      await PermissionHandler()
+          .requestPermissions([PermissionGroup.contacts]);
+      return permissionStatus[PermissionGroup.contacts] ??
+          PermissionStatus.unknown;
+    } else {
+      return permission;
+    }
+  }
 
   _loadContact() async {
+
+    if (permissionStatusHolder == null) {
+      PermissionStatus permissionStatus = await _getContactPermission();
+      permissionStatusHolder = permissionStatus;
+    }
+
+
     if (contact == null ) {
-      // print("lade Kontakt");
-      if (oHalde["kontaktId"] != null) {
+
+      if (oHalde["kontaktId"] !=  '0' && permissionStatusHolder == PermissionStatus.granted) {
+
         Future<Iterable<Contact>> contacts = ContactsService.getContacts(
-            query: oHalde["kontaktId"], withThumbnails: true);
+            query: oHalde["kontaktName"], withThumbnails: true);
         contacts.then((val) {
-          print(val
-              .elementAt(0)
-              .displayName);
           setState(() {
             contact = val.elementAt(0);
             sKontaktName = val

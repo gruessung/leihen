@@ -53,9 +53,9 @@ class DBProvider {
 
   Future<dynamic> getHomeScreenCards() async {
     final db = await database;
-    var res = await db.rawQuery('SELECT t.kontaktName, '
+    var res = await db.rawQuery('SELECT t.kontaktName, t.kontaktId, '
         '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 0) AS geliehen, '
-        '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 1) AS verliehen FROM Halde t GROUP BY t.kontaktName');
+        '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 1) AS verliehen FROM Halde t GROUP BY t.kontaktName, t.kontaktId');
 
     var list = <Map>[];
     res.forEach((c) {
