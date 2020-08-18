@@ -1,5 +1,5 @@
 name: oweapp4
-description: Ich leihe dir
+description: Leihen
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,7 +11,7 @@ description: Ich leihe dir
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 5.0+500
+version: 5.0.1+501
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -23,11 +23,16 @@ dependencies:
   path:
   camera:
   swipedetector: ^1.2.0
-
+  image_picker: ^0.6.7+4
   path_provider: any
   contacts_service: ^0.2.6
   permission_handler: '^3.0.0'
   intl: 0.15.7
+  image_crop: ^0.3.2
+  url_launcher:  ^5.5.0
+  flutter_launcher_icons: ^0.7.4
+  package_info: ^0.4.1
+  shared_preferences:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -36,6 +41,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  image_path: 'assets/launcher_icon.png'
+  android: true
+  ios: false
 
 
 # For information on the generic Dart part of this file, see the
@@ -48,6 +58,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

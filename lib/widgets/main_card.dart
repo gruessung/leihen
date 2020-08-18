@@ -23,18 +23,31 @@ class MainCardState extends State<MainCard> {
   final Map<String, dynamic> oHalde;
   final BuildContext context;
   Contact contact;
+  String sKontaktName;
 
   _loadContact() async {
-    if (contact == null) {
-      print("lade Kontakt");
-      Future<Iterable<Contact>> contacts = ContactsService.getContacts(
-          query: oHalde["kontaktName"], withThumbnails: true);
-      contacts.then((val) {
-        print(val.elementAt(0).displayName);
-        setState(() {
-          contact = val.elementAt(0);
+    if (contact == null ) {
+      // print("lade Kontakt");
+      if (oHalde["kontaktId"] != null) {
+        Future<Iterable<Contact>> contacts = ContactsService.getContacts(
+            query: oHalde["kontaktId"], withThumbnails: true);
+        contacts.then((val) {
+          print(val
+              .elementAt(0)
+              .displayName);
+          setState(() {
+            contact = val.elementAt(0);
+            sKontaktName = val
+                .elementAt(0)
+                .displayName;
+          });
         });
-      });
+      } else {
+        setState(() {
+          contact = null;
+          sKontaktName = oHalde['kontaktName'];
+        });
+      }
     }
   }
 
@@ -69,18 +82,19 @@ class MainCardState extends State<MainCard> {
   Widget build(BuildContext context) {
     _loadContact();
 
-    if (contact != null) {
-      return GestureDetector(
+    if (sKontaktName != null) {
+     // print("Name: " + sKontaktName);
+      return InkWell(
           onTap: _onTapped,
           child: Card(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+                  borderRadius: BorderRadius.circular(10)),
               color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: <Widget>[
-                    (contact.avatar != null)
+                    (contact != null && contact.avatar != null)
                         ? CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 35,
@@ -95,7 +109,7 @@ class MainCardState extends State<MainCard> {
                                 borderRadius: BorderRadius.circular(35),
                                 child: Icon(
                                   Icons.people_outline,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 )),
                           ),
                     Padding(
@@ -103,7 +117,7 @@ class MainCardState extends State<MainCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(contact.displayName,
+                            Text(sKontaktName,
                                 style: TextStyle(
                                     fontSize: 20, fontStyle: FontStyle.normal)),
                             Text("Du hast dir " +

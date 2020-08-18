@@ -14,15 +14,15 @@ class ContactCard extends StatelessWidget {
     }
 
     return Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        color: Theme.of(context).cardColor,
         child: Padding(
           padding: EdgeInsets.all(8.0),
           child: Row(
             children: <Widget>[
               (contact.avatar != null)
                   ? CircleAvatar(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Theme.of(context).primaryColor,
                       radius: 15,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(35),
