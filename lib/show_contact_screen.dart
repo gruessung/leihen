@@ -157,7 +157,7 @@ class ShowContactScreenState extends State<ShowContactScreen> {
                                                             .symmetric(
                                                             vertical: 5,
                                                             horizontal: 0)),
-                                                    DatumsZeile(halde)
+                                                    DatumsZeile()
                                                   ],
                                                 ),
                                               )
@@ -276,7 +276,7 @@ class DatumsZeile extends StatelessWidget {
             style: TextStyle(
                 fontSize: 15))
       ],
-    )
+    );
   }
 
 }
