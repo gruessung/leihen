@@ -19,20 +19,18 @@ class _NewItemSelectContactScreenState
   bool alreadyPullContacts = false;
 
   _getContacts() async {
-    if (alreadyPullContacts) {
-      return;
-    }
 
     PermissionStatus permissionStatus = await _getContactPermission();
     if (permissionStatus == PermissionStatus.granted && _contacts == null) {
-      setState(() {});
 
       var contacts = await ContactsService.getContacts(query: "");
-      contacts.toList().sort((a, b) {
+
+      /*contacts.toList().sort((a, b) {
         return a.displayName
             .toLowerCase()
             .compareTo(b.displayName.toLowerCase());
-      });
+      });*/
+      print(contacts);
 
       setState(() {
         _contacts = contacts;
@@ -93,7 +91,8 @@ class _NewItemSelectContactScreenState
               : (LoadingContactsWidget())),
       floatingActionButton: FloatingActionButton(
           child: Center(
-              child: Text("ohne Kontakt", textAlign: TextAlign.center, style: TextStyle(fontSize: 12))),
+              child: Text("ohne Kontakt",
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: 12))),
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -169,6 +168,7 @@ class LoadingContactsWidget extends StatelessWidget {
             ),
             Text(dummyTexte.elementAt(new Random().nextInt(dummyTexte.length))),
             FlatButton(
+              highlightColor: Colors.lightGreen,
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -177,6 +177,7 @@ class LoadingContactsWidget extends StatelessWidget {
                               NewItemInput(null)));
                 },
                 child: Text('Ohne Kontakt weiter'))
+
           ],
         ),
       ),
