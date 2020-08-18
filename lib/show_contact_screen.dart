@@ -27,13 +27,11 @@ class ShowContactScreenState extends State<ShowContactScreen> {
 
   _loadContact() async {
     if (contact == null && data == null) {
-      print("lade Kontakt");
+
       Future<Iterable<Contact>> contacts =
-      ContactsService.getContacts(query: kontaktName, withThumbnails: true);
+          ContactsService.getContacts(query: kontaktName, withThumbnails: true);
       contacts.then((val) {
-        print(val
-            .elementAt(0)
-            .displayName);
+        print(val.elementAt(0).displayName);
         setState(() {
           contact = val.elementAt(0);
         });
@@ -57,13 +55,10 @@ class ShowContactScreenState extends State<ShowContactScreen> {
       return Colors.white;
     }
 
-
     DateTime faellig = DateTime.fromMillisecondsSinceEpoch(halde.faellig);
     print(halde.faellig);
 
-    int daysDiff = faellig
-        .difference(DateTime.now())
-        .inDays;
+    int daysDiff = faellig.difference(DateTime.now()).inDays;
     print("Days Diff: " + daysDiff.toString());
 
     if (daysDiff < 2) {
@@ -111,61 +106,61 @@ class ShowContactScreenState extends State<ShowContactScreen> {
                                     horizontal: 0, vertical: 5),
                                 child: Card(
                                     child: Column(
-                                      children: <Widget>[
-                                        Container(
-                                          height: 5,
-                                          child: LinearProgressIndicator(
-                                            backgroundColor: _getColor(halde),
-                                            value: 0,
-                                          ),
-                                        ),
-                                        (halde.fotoPfad.isNotEmpty ||
+                                  children: <Widget>[
+                                    Container(
+                                      height: 5,
+                                      child: LinearProgressIndicator(
+                                        backgroundColor: _getColor(halde),
+                                        value: 0,
+                                      ),
+                                    ),
+                                    (halde.fotoPfad.isNotEmpty ||
                                             (halde.fotoPfad.isEmpty &&
                                                 halde.beschreibung.isNotEmpty))
-                                            ? (ItemPictureWidget(
-                                          fotoPfad: halde.fotoPfad,
-                                          beschreibung: halde.beschreibung,
-                                        ))
-                                            : Container(),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets
-                                                    .symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                                child: Column(
-                                                  crossAxisAlignment:
+                                        ? (ItemPictureWidget(
+                                            fotoPfad: halde.fotoPfad,
+                                            beschreibung: halde.beschreibung,
+                                          ))
+                                        : Container(),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
                                                   CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Row(children: <Widget>[
-                                                      (halde.typ == 1)
-                                                          ? Icon(Icons.redo)
-                                                          : Icon(Icons.undo),
-                                                      Container(
-                                                          width: 10, height: 1),
-                                                      Text(halde.betreff,
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontStyle:
+                                              children: <Widget>[
+                                                Row(children: <Widget>[
+                                                  (halde.typ == 1)
+                                                      ? Icon(Icons.redo)
+                                                      : Icon(Icons.undo),
+                                                  Container(
+                                                      width: 10, height: 1),
+                                                  Text(halde.betreff,
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontStyle:
                                                               FontStyle.normal))
-                                                    ]),
-                                                    Padding(
-                                                        padding: const EdgeInsets
+                                                ]),
+                                                Padding(
+                                                    padding: const EdgeInsets
                                                             .symmetric(
-                                                            vertical: 5,
-                                                            horizontal: 0)),
-                                                    DatumsZeile()
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    )),
+                                                        vertical: 5,
+                                                        horizontal: 0)),
+                                                DatumsZeile(
+                                                  halde: halde,
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(2),
@@ -245,40 +240,31 @@ class ShowContactScreenState extends State<ShowContactScreen> {
 class DatumsZeile extends StatelessWidget {
   final Halde halde;
 
-  DatumsZeile({Key key, @required this.halde})
-      : super(key: key);
+  DatumsZeile({Key key, @required this.halde}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
-      children: <Widget>[
-        Icon(
-          Icons.calendar_today,
-          size: 15,
-        ),
-        Padding(
-          padding: const EdgeInsets
-              .symmetric(
-              vertical: 0,
-              horizontal: 2),
-        ),
-        Text(
-            (halde != null && halde.faellig != null)
-                ? DateFormat(
-                'dd.MM.yyyy')
-                .format(DateTime
-                .fromMillisecondsSinceEpoch(
-                halde
-                    .faellig))
-                : '',
-            style: TextStyle(
-                fontSize: 15))
-      ],
-    );
+    if (halde != null && halde.faellig != null) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(
+            Icons.calendar_today,
+            size: 15,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+          ),
+          Text(
+              DateFormat('dd.MM.yyyy')
+                  .format(DateTime.fromMillisecondsSinceEpoch(halde.faellig)),
+              style: TextStyle(fontSize: 15))
+        ],
+      );
+    } else {
+      return Container();
+    }
   }
-
 }
 
 /// Widget zum anzeigen des HeaderImages
@@ -299,17 +285,13 @@ class ItemPictureWidget extends StatelessWidget {
           Positioned.fill(
             child: Ink.image(
               image: (fotoPfad.isNotEmpty)
-                  ? Image
-                  .file(File(fotoPfad))
-                  .image
-                  : Image
-                  .asset('assets/background.jpg')
-                  .image,
+                  ? Image.file(File(fotoPfad)).image
+                  : Image.asset('assets/background.jpg').image,
               fit: BoxFit.cover,
               child: Container(),
               colorFilter: (this.beschreibung.isNotEmpty)
                   ? (ColorFilter.mode(
-                  Colors.black.withOpacity(0.2), BlendMode.srcOver))
+                      Colors.black.withOpacity(0.2), BlendMode.srcOver))
                   : null,
             ),
           ),

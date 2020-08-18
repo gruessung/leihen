@@ -6,38 +6,44 @@ import 'package:oweapp4/widgets/contact_card.dart';
 import 'package:oweapp4/NI_InputDetailsScreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class NewItemScreen extends StatefulWidget {
+class NewItemSelectContactScreen extends StatefulWidget {
   @override
-  _NewItemScreenState createState() => _NewItemScreenState();
+  _NewItemSelectContactScreenState createState() =>
+      _NewItemSelectContactScreenState();
 }
 
-class _NewItemScreenState extends State<NewItemScreen> {
+class _NewItemSelectContactScreenState
+    extends State<NewItemSelectContactScreen> {
   Iterable<Contact> _contacts;
-
+  bool contactPermission = true;
+  bool alreadyPullContacts = false;
 
   _getContacts() async {
-    print("Lade Kontakte");
+    if (alreadyPullContacts) {
+      return;
+    }
+
     PermissionStatus permissionStatus = await _getContactPermission();
     if (permissionStatus == PermissionStatus.granted && _contacts == null) {
+      setState(() {});
 
       var contacts = await ContactsService.getContacts(query: "");
       contacts.toList().sort((a, b) {
-        return a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase());
+        return a.displayName
+            .toLowerCase()
+            .compareTo(b.displayName.toLowerCase());
       });
 
       setState(() {
         _contacts = contacts;
+        contactPermission = true;
+        alreadyPullContacts = true;
       });
     } else {
-      _handleInvalidPermissions(permissionStatus);
-    }
-  }
-
-  void _handleInvalidPermissions(PermissionStatus permissionStatus) {
-    if (permissionStatus == PermissionStatus.denied) {
-      throw new Exception("PERMISSION_DENIED");
-    } else if (permissionStatus == PermissionStatus.disabled) {
-      throw new Exception('PERMISSION_DISABLED');
+      setState(() {
+        contactPermission = false;
+        alreadyPullContacts = true;
+      });
     }
   }
 
@@ -47,8 +53,8 @@ class _NewItemScreenState extends State<NewItemScreen> {
     if (permission != PermissionStatus.granted &&
         permission != PermissionStatus.disabled) {
       Map<PermissionGroup, PermissionStatus> permissionStatus =
-      await PermissionHandler()
-          .requestPermissions([PermissionGroup.contacts]);
+          await PermissionHandler()
+              .requestPermissions([PermissionGroup.contacts]);
       return permissionStatus[PermissionGroup.contacts] ??
           PermissionStatus.unknown;
     } else {
@@ -64,61 +70,81 @@ class _NewItemScreenState extends State<NewItemScreen> {
         title: Text('Wähle einen Kontakt'),
       ),
       body: SafeArea(
-          child: (_contacts != null)
-              ? (
-              (_contacts?.length > 0) ? (
-
-              ListView.builder(
-                  itemCount: _contacts?.length ?? 0,
-                  itemBuilder: (BuildContext context, int index) {
-                    Contact contact = _contacts?.elementAt(index);
-                    return GestureDetector(
-                      onTap: () =>
-                          Navigator.push(
+          child: (_contacts != null || !contactPermission)
+              ? ((_contacts != null && _contacts?.length > 0)
+                  ? (ListView.builder(
+                      itemCount: _contacts?.length ?? 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        Contact contact = _contacts?.elementAt(index);
+                        return GestureDetector(
+                          onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       NewItemInput(contact))),
-                      child: contact.displayName != null
-                          ? ContactCard(contact)
-                          : null,
-                    );
-                  })
-              ):(NoContactsFoundWidget())
-          )
-              : (LoadingContactsWidget())
-      ),
+                          child: contact.displayName != null
+                              ? ContactCard(contact)
+                              : null,
+                        );
+                      }))
+                  : (NoContactsFoundWidget(
+                      contactPermission: contactPermission,
+                    )))
+              : (LoadingContactsWidget())),
+      floatingActionButton: FloatingActionButton(
+          child: Center(
+              child: Text("ohne Kontakt", textAlign: TextAlign.center, style: TextStyle(fontSize: 12))),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => NewItemInput(null)))),
     );
   }
 }
 
-
 class NoContactsFoundWidget extends StatelessWidget {
+  final bool contactPermission;
+
+  NoContactsFoundWidget({Key key, @required this.contactPermission})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Padding(
+    return Center(
+        child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 100),
       child: Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Icon(
-                  Icons.error,
-                  size: 40,
-                  color: Theme.of(context).primaryColor,
-                ),
-                Container(height: 20),
-                Text(
-                  "Keine Kontakte gefunden",
-                  style: TextStyle(
-                    color: Theme.of(context).accentColor,
-                    fontWeight: FontWeight.w300,
-                    fontSize: 25,
-                    fontStyle: FontStyle.italic,
-                  ),
-                )
-              ])),
+            Icon(
+              Icons.error,
+              size: 40,
+              color: Theme.of(context).primaryColor,
+            ),
+            Container(height: 20),
+            Text(
+              (contactPermission)
+                  ? "Keine Kontakte gefunden"
+                  : "Keine Berechtigung für Kontakte :(",
+              style: TextStyle(
+                color: Theme.of(context).accentColor,
+                fontWeight: FontWeight.w300,
+                fontSize: 25,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              NewItemInput(null)));
+                },
+                child: Text('Ohne Kontakt weiter'))
+          ])),
     ));
   }
 }
@@ -132,21 +158,28 @@ class LoadingContactsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 100),
-      child: Column(
-        children: <Widget>[
-          CircularProgressIndicator(),
-          Padding(
-            padding: const EdgeInsets.all(10),
-          ),
-          Text(dummyTexte.elementAt(new Random().nextInt(dummyTexte.length)))
-        ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 100),
+        child: Column(
+          children: <Widget>[
+            CircularProgressIndicator(),
+            Padding(
+              padding: const EdgeInsets.all(10),
+            ),
+            Text(dummyTexte.elementAt(new Random().nextInt(dummyTexte.length))),
+            FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              NewItemInput(null)));
+                },
+                child: Text('Ohne Kontakt weiter'))
+          ],
+        ),
       ),
-    ),
     );
-
   }
-
 }
-

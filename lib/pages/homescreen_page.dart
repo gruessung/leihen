@@ -155,7 +155,7 @@ class HomeScreenState extends State<HomeScreen> {
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => NewItemInput(null)))),
+                  builder: (BuildContext context) => NewItemSelectContactScreen()))),
     );
   }
 }
