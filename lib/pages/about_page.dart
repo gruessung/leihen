@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:oweapp4/widgets/drawer.dart';
+import 'package:package_info/package_info.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   static const String routeName = '/about';
 
   @override
+  _AboutPageState createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  String versionName = '';
+
+  _getBuildNumber() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(()  {
+      versionName = packageInfo.version;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _getBuildNumber();
     TextStyle textStyle = TextStyle(
       color: Theme.of(context).accentColor,
       fontWeight: FontWeight.w300,
@@ -28,7 +44,7 @@ class AboutPage extends StatelessWidget {
                 height: 5,
               ),
               Text(
-                "Leihen v5",
+                "Leihen v" + this.versionName,
                 style: textStyle,
               ),
               Text("www.leihen.app", style: textStyle),

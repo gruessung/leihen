@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:oweapp4/Database.dart';
+import 'package:oweapp4/pages/changelog_screen.dart';
 import 'package:oweapp4/pages/input_item_screen.dart';
 import 'package:oweapp4/NI_SelectContactScreen.dart';
 import 'package:oweapp4/pages/about_page.dart';
 import 'package:oweapp4/widgets/drawer.dart';
 import 'package:oweapp4/widgets/main_card.dart';
+import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -34,6 +37,24 @@ class HomeScreenState extends State<HomeScreen> {
     print("Call initState()");
     _getHomeScreenData();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => __showChangelogIfNeccesary());
+  }
+
+  __showChangelogIfNeccesary() async {
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    print(packageInfo.buildNumber);
+    print(this._lastVersionNumber);
+    print((this._lastVersionNumber.compareTo(packageInfo.buildNumber).isEven));
+
+    if (this._lastVersionNumber == null || (this._lastVersionNumber != null && (this._lastVersionNumber.compareTo(packageInfo.buildNumber).isEven) == false)) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('lastVersionNumber', packageInfo.buildNumber);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => ChangelogScreen()));
+    }
+
   }
 
   _checkContactPermission() async {
@@ -70,7 +91,6 @@ class HomeScreenState extends State<HomeScreen> {
         firstStart = true;
       });
     }
-
   }
 
   _showFirstStartScreen() {
@@ -85,22 +105,22 @@ class HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(
-                Icons.info,
-                size: 25,
-              ),
-              Container(
-                height: 5,
-              ),
-              Text(
-                "Diese App braucht die Berechtigung zum Lesen deiner Kontakte.",
-                style: textStyle,
-              ),
-              Container(height: 50),
-
-              Icon(Icons.favorite, color: Colors.redAccent),
-              Text("Deine Daten bleiben auf deinem Gerät, versprochen!", style: textStyle)
-            ]));
+          Icon(
+            Icons.info,
+            size: 25,
+          ),
+          Container(
+            height: 5,
+          ),
+          Text(
+            "Diese App braucht die Berechtigung zum Lesen deiner Kontakte.",
+            style: textStyle,
+          ),
+          Container(height: 50),
+          Icon(Icons.favorite, color: Colors.redAccent),
+          Text("Deine Daten bleiben auf deinem Gerät, versprochen!",
+              style: textStyle)
+        ]));
   }
 
   @override
@@ -155,7 +175,8 @@ class HomeScreenState extends State<HomeScreen> {
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => NewItemSelectContactScreen()))),
+                  builder: (BuildContext context) =>
+                      NewItemSelectContactScreen()))),
     );
   }
 }

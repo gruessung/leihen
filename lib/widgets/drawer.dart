@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oweapp4/main.dart';
 import 'package:oweapp4/pages/about_page.dart';
+import 'package:oweapp4/pages/changelog_screen.dart';
 import 'package:oweapp4/routes/Routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
@@ -45,6 +46,13 @@ class _AppDrawerState extends State<AppDrawer> {
                   MaterialPageRoute(
                       builder: (BuildContext context) => AboutPage()))),
           Divider(),
+          _createDrawerItem(
+              icon: Icons.fiber_new_outlined,
+              text: 'Changelog',
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ChangelogScreen()))),
           _createDrawerItem(
               icon: Icons.bug_report,
               text: 'Fehler melden',

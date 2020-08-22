@@ -104,8 +104,15 @@ class ShowItemsToContactScreenState extends State<ShowItemsToContactScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _loadContact();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("Run build");
+
 
     return Scaffold(
         appBar: AppBar(
