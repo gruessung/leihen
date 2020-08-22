@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:oweapp4/widgets/contact_card.dart';
-import 'package:oweapp4/NI_InputDetailsScreen.dart';
+import 'package:oweapp4/pages/input_item_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class NewItemSelectContactScreen extends StatefulWidget {
@@ -78,7 +78,7 @@ class _NewItemSelectContactScreenState
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      NewItemInput(contact))),
+                                      InputItemScreen( contact,  null))),
                           child: contact.displayName != null
                               ? ContactCard(contact)
                               : null,
@@ -95,7 +95,7 @@ class _NewItemSelectContactScreenState
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => NewItemInput(null)))),
+                  builder: (BuildContext context) => InputItemScreen( null,  null)))),
     );
   }
 }
@@ -139,7 +139,7 @@ class NoContactsFoundWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              NewItemInput(null)));
+                              InputItemScreen( null,  null,)));
                 },
                 child: Text('Ohne Kontakt weiter'))
           ])),
@@ -173,7 +173,7 @@ class LoadingContactsWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              NewItemInput(null)));
+                              InputItemScreen( null,  null)));
                 },
                 child: Text('Ohne Kontakt weiter'))
 

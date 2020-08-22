@@ -2,7 +2,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:oweapp4/HaldeModel.dart';
-import 'package:oweapp4/show_contact_screen.dart';
+import 'package:oweapp4/pages/show_items_to_contact_screen.dart';
 import 'package:oweapp4/widgets/contact_card.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -99,7 +99,7 @@ class MainCardState extends State<MainCard> {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) =>
-                ShowContactScreen(oHalde["kontaktName"])));
+                ShowItemsToContactScreen(oHalde["kontaktName"])));
   }
 
   @override

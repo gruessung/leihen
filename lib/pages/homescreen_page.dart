@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oweapp4/Database.dart';
-import 'package:oweapp4/NI_InputDetailsScreen.dart';
+import 'package:oweapp4/pages/input_item_screen.dart';
 import 'package:oweapp4/NI_SelectContactScreen.dart';
 import 'package:oweapp4/pages/about_page.dart';
 import 'package:oweapp4/widgets/drawer.dart';

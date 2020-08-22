@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:oweapp4/Database.dart';
 import 'package:oweapp4/HaldeModel.dart';
 import 'package:oweapp4/pages/homescreen_page.dart';
@@ -10,19 +11,21 @@ import 'dart:async';
 
 import 'package:oweapp4/widgets/contact_card.dart';
 
-class NewItemInput extends StatefulWidget {
+class InputItemScreen extends StatefulWidget {
   final Contact contact;
+  final Halde editItem;
 
-  NewItemInput(this.contact);
+  InputItemScreen(this.contact, this.editItem);
 
   @override
   State<StatefulWidget> createState() {
-    return NewItemInputState(contact);
+    return InputItemScreenState(this.contact, this.editItem);
   }
 }
 
-class NewItemInputState extends State<NewItemInput> {
+class InputItemScreenState extends State<InputItemScreen> {
   Contact contact;
+  Halde editItem;
   final _formKey = new GlobalKey<FormState>();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   var txt = new TextEditingController();
@@ -34,21 +37,37 @@ class NewItemInputState extends State<NewItemInput> {
   int iTimestamp;
   String sKontaktNameFallback;
 
-  NewItemInputState(this.contact);
+  InputItemScreenState(this.contact, this.editItem) {}
 
   _onItemSavePress() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      DBProvider.db.newHalde(Halde(
-          kontaktId: (contact != null) ? contact.identifier : '0',
-          kontaktName: (contact != null) ? contact.displayName : sKontaktNameFallback,
-          beschreibung: sBeschreibung,
-          faellig: iTimestamp,
-          fotoPfad: (_image == null) ? '' : _image.path,
-          betreff: sItem,
-          erstellt: DateTime.now().millisecondsSinceEpoch,
-          typ: (bSwitch) ? 1 : 0));
+      Halde haldeToSave;
+
+      if (this.editItem != null) {
+        this.editItem.faellig = iTimestamp;
+        this.editItem.beschreibung = sBeschreibung;
+        this.editItem.betreff = sItem;
+        this.editItem.fotoPfad = (_image == null) ? '' : _image.path;
+        this.editItem.typ = (bSwitch) ? 1 :0;
+        haldeToSave = this.editItem;
+        DBProvider.db.deleteHalde(this.editItem);
+      }
+      else {
+        haldeToSave = Halde(
+            kontaktId: (contact != null) ? contact.identifier : '0',
+            kontaktName:
+            (contact != null) ? contact.displayName : sKontaktNameFallback,
+            beschreibung: sBeschreibung,
+            faellig: iTimestamp,
+            fotoPfad: (_image == null) ? '' : _image.path,
+            betreff: sItem,
+            erstellt: DateTime.now().millisecondsSinceEpoch,
+            typ: (bSwitch) ? 1 : 0);
+      }
+
+      DBProvider.db.newHalde(haldeToSave);
 
       _scaffoldKey.currentState
           .showSnackBar(SnackBar(content: Text('Gespeichert!')));
@@ -71,7 +90,7 @@ class NewItemInputState extends State<NewItemInput> {
         context: context,
         initialDate: new DateTime.now(),
         firstDate: new DateTime(2010),
-        lastDate: new DateTime(2025));
+        lastDate: new DateTime(2050));
 
     if (picked != null)
       setState(() {
@@ -99,15 +118,37 @@ class NewItemInputState extends State<NewItemInput> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (this.editItem != null) {
+      print(this.editItem.typ);
+      setState(() {
+        this.bSwitch = (this.editItem.typ == 1) ? true : false;
+        if (this.editItem.fotoPfad.isNotEmpty) {
+          this._image = File(this.editItem.fotoPfad);
+        }
+        if (this.editItem.faellig != null) {
+          this.txt.text = DateFormat('dd.MM.yyyy').format(
+              DateTime.fromMillisecondsSinceEpoch(this.editItem.faellig));
+          this.iTimestamp = this.editItem.faellig;
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     String kontaktName = '';
     if (contact != null) {
       kontaktName = contact.displayName;
     }
+
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Neuer Eintrag'),
+          title: (this.editItem == null)
+              ? Text('Neuer Eintrag')
+              : Text('Eintrag bearbeiten'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -116,19 +157,26 @@ class NewItemInputState extends State<NewItemInput> {
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    (contact != null) ? ContactCard(contact) : TextFormField(
-                      obscureText: false,
-                      // ignore: missing_return
-                      validator: (val) {
-                        if (val.isEmpty) {
-                          return 'Bitte gib etwas ein.';
-                        }
-                      },
-                      onSaved: (val) => sKontaktNameFallback = val,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Kontaktname'),
-                    ),
+                    (contact != null)
+                        ? ContactCard(contact)
+                        : TextFormField(
+                            obscureText: false,
+                            initialValue: (this.editItem == null)
+                                ? ''
+                                : this.editItem.kontaktName,
+                            enabled: (this.editItem == null) ? true : false,
+
+                            // ignore: missing_return
+                            validator: (val) {
+                              if (val.isEmpty) {
+                                return 'Bitte gib etwas ein.';
+                              }
+                            },
+                            onSaved: (val) => sKontaktNameFallback = val,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Kontaktname'),
+                          ),
                     Padding(
                       padding: const EdgeInsets.all(10),
                     ),
@@ -141,6 +189,9 @@ class NewItemInputState extends State<NewItemInput> {
                         }
                       },
                       onSaved: (val) => sItem = val,
+                      initialValue:
+                          (this.editItem == null) ? '' : this.editItem.betreff,
+
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Worum geht es?'),
@@ -152,6 +203,9 @@ class NewItemInputState extends State<NewItemInput> {
                       obscureText: false,
                       maxLines: 3,
                       keyboardType: TextInputType.multiline,
+                      initialValue: (this.editItem == null)
+                          ? ''
+                          : this.editItem.beschreibung,
                       onSaved: (val) => sBeschreibung = val,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -167,8 +221,6 @@ class NewItemInputState extends State<NewItemInput> {
                         child: TextFormField(
                           controller: txt,
                           obscureText: false,
-                          // ignore: missing_return
-
                           onSaved: (val) =>
                               sDatum = (val.isNotEmpty) ? val : '01.01.2050',
                           decoration: InputDecoration(
@@ -181,8 +233,7 @@ class NewItemInputState extends State<NewItemInput> {
                       padding: const EdgeInsets.all(10),
                     ),
                     SwitchListTile(
-                        title: Text(
-                            'Leihst du ' + kontaktName + ' etwas aus?'),
+                        title: Text('Leihst du ' + kontaktName + ' etwas aus?'),
                         value: bSwitch,
                         onChanged: (bool val) {
                           setState(() {

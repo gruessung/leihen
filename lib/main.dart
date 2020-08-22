@@ -11,7 +11,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:oweapp4/pages/homescreen_page.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,10 +22,22 @@ void main() {
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
 
+  _getDBPath() async {
+    print("DB Test");
+    var databasesPath = await getDatabasesPath();
+    print(databasesPath);
+    Database db = await openDatabase(databasesPath + '/oweapp.db');
+    print(db.path);
+    List<Map> result = await db.rawQuery("SELECT  name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';");
+    print(result);
+
+  }
 
 
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
         title: 'Leihen',
         debugShowCheckedModeBanner: false,

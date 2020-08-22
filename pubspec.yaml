@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite: any
+  sqflite: ^1.3.0
   path:
   camera:
   swipedetector: ^1.2.0
