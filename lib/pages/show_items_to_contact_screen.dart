@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:oweapp4/Database.dart';
-import 'package:oweapp4/HaldeModel.dart';
+import 'package:oweapp4/services/Database.dart';
+import 'package:oweapp4/services/HaldeModel.dart';
 import 'package:intl/intl.dart';
 import 'package:oweapp4/pages/input_item_screen.dart';
 import 'package:permission_handler/permission_handler.dart';

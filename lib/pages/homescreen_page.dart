@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:oweapp4/Database.dart';
+import 'package:oweapp4/services/Database.dart';
 import 'package:oweapp4/pages/changelog_screen.dart';
 import 'package:oweapp4/pages/input_item_screen.dart';
 import 'package:oweapp4/NI_SelectContactScreen.dart';
 import 'package:oweapp4/pages/about_page.dart';
+import 'package:oweapp4/services/AppLocalizations.dart';
 import 'package:oweapp4/widgets/drawer.dart';
 import 'package:oweapp4/widgets/main_card.dart';
 import 'package:package_info/package_info.dart';
@@ -25,6 +26,7 @@ class HomeScreenState extends State<HomeScreen> {
   bool firstStart = false;
 
   _getHomeScreenData() async {
+    print("Call _getHomeScreenData()");
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _homeScreenData = DBProvider.db.getHomeScreenCards();
@@ -38,23 +40,27 @@ class HomeScreenState extends State<HomeScreen> {
     _getHomeScreenData();
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => __showChangelogIfNeccesary());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => __showChangelogIfNeccesary());
   }
 
   __showChangelogIfNeccesary() async {
-
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    print(packageInfo.buildNumber);
-    print(this._lastVersionNumber);
-    print((this._lastVersionNumber.compareTo(packageInfo.buildNumber).isEven));
 
-    if (this._lastVersionNumber == null || (this._lastVersionNumber != null && (this._lastVersionNumber.compareTo(packageInfo.buildNumber).isEven) == false)) {
+    if (this._lastVersionNumber == null ||
+        (this._lastVersionNumber != null &&
+            (this
+                    ._lastVersionNumber
+                    .compareTo(packageInfo.buildNumber)
+                    .isEven) ==
+                false)) {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('lastVersionNumber', packageInfo.buildNumber);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context) => ChangelogScreen()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ChangelogScreen()));
     }
-
   }
 
   _checkContactPermission() async {
@@ -80,6 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /*
   _checkFirstStart() async {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('firstStart')) {
@@ -122,16 +129,15 @@ class HomeScreenState extends State<HomeScreen> {
               style: textStyle)
         ]));
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     //_checkContactPermission();
-    _checkFirstStart();
-    _getHomeScreenData();
+    //_checkFirstStart();
     //_checkChangelogDialog(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Übersicht'),
+        title: Text(AppLocalizations.of(context).translate('pagename_overview')),
       ),
       drawer: AppDrawer(),
       body: /*(firstStart) ? _showFirstStartScreen() :*/ FutureBuilder<dynamic>(

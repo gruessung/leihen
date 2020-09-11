@@ -4,12 +4,13 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:oweapp4/Database.dart';
-import 'package:oweapp4/HaldeModel.dart';
+import 'package:oweapp4/services/Database.dart';
+import 'package:oweapp4/services/HaldeModel.dart';
 import 'package:oweapp4/pages/homescreen_page.dart';
 import 'dart:async';
 
 import 'package:oweapp4/widgets/contact_card.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
 
 class InputItemScreen extends StatefulWidget {
   final Contact contact;
@@ -36,6 +37,7 @@ class InputItemScreenState extends State<InputItemScreen> {
   bool bSwitch = true;
   int iTimestamp;
   String sKontaktNameFallback;
+  bool bSwitchCal = false;
 
   InputItemScreenState(this.contact, this.editItem) {}
 
@@ -65,6 +67,20 @@ class InputItemScreenState extends State<InputItemScreen> {
             betreff: sItem,
             erstellt: DateTime.now().millisecondsSinceEpoch,
             typ: (bSwitch) ? 1 : 0);
+      }
+
+
+      //Kalendereintrag speichern
+      if (iTimestamp != null && iTimestamp > 1000 && bSwitchCal)  {
+        Event event = Event(
+          title: haldeToSave.kontaktName + ': ' + haldeToSave.betreff,
+          description: haldeToSave.beschreibung,
+          startDate: DateTime.fromMillisecondsSinceEpoch(haldeToSave.faellig),
+          endDate: DateTime.fromMillisecondsSinceEpoch(haldeToSave.faellig),
+          allDay: true,
+        );
+
+        Add2Calendar.addEvent2Cal(event);
       }
 
       DBProvider.db.newHalde(haldeToSave);
@@ -241,6 +257,16 @@ class InputItemScreenState extends State<InputItemScreen> {
                           });
                         },
                         secondary: const Icon(Icons.account_balance)),
+                   /* SwitchListTile(
+                        title: Text('Kalendereintrag erstellen'),
+                        value: bSwitchCal,
+                        onChanged: (bool val) {
+                          setState(() {
+                            bSwitchCal = val;
+                          });
+                        },
+                        secondary: const Icon(Icons.calendar_today)),*/
+
                     Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 0, vertical: 5)),

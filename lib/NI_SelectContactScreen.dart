@@ -60,8 +60,15 @@ class _NewItemSelectContactScreenState
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     _getContacts();
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Wähle einen Kontakt'),

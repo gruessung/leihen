@@ -1,4 +1,4 @@
-import 'package:oweapp4/HaldeModel.dart';
+import 'package:oweapp4/services/HaldeModel.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
