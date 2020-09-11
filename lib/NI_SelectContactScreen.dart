@@ -5,6 +5,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:oweapp4/widgets/contact_card.dart';
 import 'package:oweapp4/pages/input_item_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:oweapp4/services/AppLocalizations.dart';
 
 class NewItemSelectContactScreen extends StatefulWidget {
   @override
@@ -19,28 +20,27 @@ class _NewItemSelectContactScreenState
   bool alreadyPullContacts = false;
 
   _getContacts() async {
-
-    PermissionStatus permissionStatus = await _getContactPermission();
-    if (permissionStatus == PermissionStatus.granted && _contacts == null) {
-
-      var contacts = await ContactsService.getContacts(query: "");
-      /*contacts.toList().sort((a, b) {
+    if (!alreadyPullContacts) {
+      PermissionStatus permissionStatus = await _getContactPermission();
+      if (permissionStatus == PermissionStatus.granted && _contacts == null) {
+        var contacts = await ContactsService.getContacts(query: "");
+        /*contacts.toList().sort((a, b) {
         return a.displayName
             .toLowerCase()
             .compareTo(b.displayName.toLowerCase());
       });*/
 
-
-      setState(() {
-        _contacts = contacts;
-        contactPermission = true;
-        alreadyPullContacts = true;
-      });
-    } else {
-      setState(() {
-        contactPermission = false;
-        alreadyPullContacts = true;
-      });
+        setState(() {
+          _contacts = contacts;
+          contactPermission = true;
+          alreadyPullContacts = true;
+        });
+      } else {
+        setState(() {
+          contactPermission = false;
+          alreadyPullContacts = true;
+        });
+      }
     }
   }
 
@@ -61,17 +61,15 @@ class _NewItemSelectContactScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getContacts();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Wähle einen Kontakt'),
+        title: Text(AppLocalizations.of(context).translate('pagename_select_contact')),
       ),
       body: SafeArea(
           child: (_contacts != null || !contactPermission)
@@ -85,7 +83,7 @@ class _NewItemSelectContactScreenState
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      InputItemScreen( contact,  null))),
+                                      InputItemScreen(contact, null))),
                           child: contact.displayName != null
                               ? ContactCard(contact)
                               : null,
@@ -97,12 +95,16 @@ class _NewItemSelectContactScreenState
               : (LoadingContactsWidget())),
       floatingActionButton: FloatingActionButton(
           child: Center(
-              child: Text("ohne Kontakt",
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 12))),
+              child: Text(
+                  AppLocalizations.of(context)
+                      .translate('forward_without_contact_button'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12))),
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => InputItemScreen( null,  null)))),
+                  builder: (BuildContext context) =>
+                      InputItemScreen(null, null)))),
     );
   }
 }
@@ -131,8 +133,9 @@ class NoContactsFoundWidget extends StatelessWidget {
             Container(height: 20),
             Text(
               (contactPermission)
-                  ? "Keine Kontakte gefunden"
-                  : "Keine Berechtigung für Kontakte :(",
+                  ? AppLocalizations.of(context).translate('no_contacts')
+                  : AppLocalizations.of(context)
+                      .translate('no_contacts_permission'),
               style: TextStyle(
                 color: Theme.of(context).accentColor,
                 fontWeight: FontWeight.w300,
@@ -145,10 +148,13 @@ class NoContactsFoundWidget extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              InputItemScreen( null,  null,)));
+                          builder: (BuildContext context) => InputItemScreen(
+                                null,
+                                null,
+                              )));
                 },
-                child: Text('Ohne Kontakt weiter'))
+                child: Text(AppLocalizations.of(context)
+                    .translate('forward_without_contact')))
           ])),
     ));
   }
@@ -174,16 +180,16 @@ class LoadingContactsWidget extends StatelessWidget {
             ),
             Text(dummyTexte.elementAt(new Random().nextInt(dummyTexte.length))),
             FlatButton(
-              highlightColor: Colors.lightGreen,
+                highlightColor: Colors.lightGreen,
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              InputItemScreen( null,  null)));
+                              InputItemScreen(null, null)));
                 },
-                child: Text('Ohne Kontakt weiter'))
-
+                child: Text(AppLocalizations.of(context)
+                    .translate('forward_without_contact')))
           ],
         ),
       ),

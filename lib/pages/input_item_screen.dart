@@ -4,6 +4,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:oweapp4/services/AppLocalizations.dart';
 import 'package:oweapp4/services/Database.dart';
 import 'package:oweapp4/services/HaldeModel.dart';
 import 'package:oweapp4/pages/homescreen_page.dart';
@@ -86,7 +87,7 @@ class InputItemScreenState extends State<InputItemScreen> {
       DBProvider.db.newHalde(haldeToSave);
 
       _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text('Gespeichert!')));
+          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).translate('item_snackbar_saved'))));
 
       sleep1();
     }
@@ -158,13 +159,16 @@ class InputItemScreenState extends State<InputItemScreen> {
     if (contact != null) {
       kontaktName = contact.displayName;
     }
+    if (this.editItem != null) {
+      kontaktName = this.editItem.kontaktName;
+    }
 
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           title: (this.editItem == null)
-              ? Text('Neuer Eintrag')
-              : Text('Eintrag bearbeiten'),
+              ? Text(AppLocalizations.of(context).translate('pagename_new_item'))
+              : Text(AppLocalizations.of(context).translate('pagename_edit_item')),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -185,13 +189,13 @@ class InputItemScreenState extends State<InputItemScreen> {
                             // ignore: missing_return
                             validator: (val) {
                               if (val.isEmpty) {
-                                return 'Bitte gib etwas ein.';
+                                return AppLocalizations.of(context).translate('input_validation_error');
                               }
                             },
                             onSaved: (val) => sKontaktNameFallback = val,
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Kontaktname'),
+                                labelText: AppLocalizations.of(context).translate('item_contact_name')),
                           ),
                     Padding(
                       padding: const EdgeInsets.all(10),
@@ -201,7 +205,7 @@ class InputItemScreenState extends State<InputItemScreen> {
                       // ignore: missing_return
                       validator: (val) {
                         if (val.isEmpty) {
-                          return 'Bitte gib etwas ein.';
+                          return AppLocalizations.of(context).translate('input_validation_error');
                         }
                       },
                       onSaved: (val) => sItem = val,
@@ -210,7 +214,7 @@ class InputItemScreenState extends State<InputItemScreen> {
 
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Worum geht es?'),
+                          labelText: AppLocalizations.of(context).translate('item_summary')),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
@@ -225,7 +229,7 @@ class InputItemScreenState extends State<InputItemScreen> {
                       onSaved: (val) => sBeschreibung = val,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Beschreibung'),
+                          labelText: AppLocalizations.of(context).translate('item_description')),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
@@ -241,7 +245,7 @@ class InputItemScreenState extends State<InputItemScreen> {
                               sDatum = (val.isNotEmpty) ? val : '01.01.2050',
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Rückgabedatum'),
+                              labelText: AppLocalizations.of(context).translate('item_due_date')),
                         ),
                       ),
                     ),
@@ -249,7 +253,7 @@ class InputItemScreenState extends State<InputItemScreen> {
                       padding: const EdgeInsets.all(10),
                     ),
                     SwitchListTile(
-                        title: Text('Leihst du ' + kontaktName + ' etwas aus?'),
+                        title: Text(AppLocalizations.of(context).translate('item_switch_type', [kontaktName])),
                         value: bSwitch,
                         onChanged: (bool val) {
                           setState(() {

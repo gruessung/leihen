@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:oweapp4/services/AppLocalizations.dart';
 import 'package:oweapp4/services/Database.dart';
 import 'package:oweapp4/services/HaldeModel.dart';
 import 'package:intl/intl.dart';
@@ -219,8 +220,8 @@ class ShowItemsToContactScreenState extends State<ShowItemsToContactScreen> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text('Eintrag löschen'),
-                                    content: Text('Bist du sicher?'),
+                                    title: Text(AppLocalizations.of(context).translate('delete_summary')),
+                                    content: Text(AppLocalizations.of(context).translate('delete_description')),
                                     actions: <Widget>[
                                       FlatButton(
                                         onPressed: () {
@@ -230,7 +231,7 @@ class ShowItemsToContactScreenState extends State<ShowItemsToContactScreen> {
                                             // rootNavigator: true,
                                           ).pop(false);
                                         },
-                                        child: Text('Nein'),
+                                        child: Text(AppLocalizations.of(context).translate('no')),
                                       ),
                                       FlatButton(
                                         onPressed: () {
@@ -240,7 +241,7 @@ class ShowItemsToContactScreenState extends State<ShowItemsToContactScreen> {
                                             // rootNavigator: true,
                                           ).pop(true);
                                         },
-                                        child: Text('Ja'),
+                                        child: Text(AppLocalizations.of(context).translate('yes')),
                                       ),
                                     ],
                                   );
@@ -256,7 +257,7 @@ class ShowItemsToContactScreenState extends State<ShowItemsToContactScreen> {
 
                               //Notification zeigen
                               Scaffold.of(context).showSnackBar(
-                                  SnackBar(content: Text('Gelöscht!')));
+                                  SnackBar(content: Text(AppLocalizations.of(context).translate('delete_successful'))));
 
                               //Daten neu laden und State neu setzen
                               setState(() {
@@ -279,7 +280,7 @@ class ShowItemsToContactScreenState extends State<ShowItemsToContactScreen> {
                       );
                     });
               } else {
-                return Center(child: Text("Keine Daten :("));
+                return Center(child: Text(AppLocalizations.of(context).translate('no_data')));
               }
             }));
   }

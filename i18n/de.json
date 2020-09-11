@@ -1,0 +1,48 @@
+{
+  "app_name": "Leihen",
+  "yes" : "Ja",
+  "no" : "Nein",
+  "input_validation_error" : "Bitte gib etwas ein.",
+  "no_data" : "Keine Daten :(",
+
+  "pagename_overview" : "Übersicht",
+  "pagename_about" : "Über",
+  "pagename_bug" : "Fehler melden",
+  "pagename_changelog" : "Was gibt's neues?",
+
+
+  "empty_overview": "Leg gleich los",
+  "overview_contact_summary_borrow_0": "Du hast dir keinen Gegenstand geliehen",
+  "overview_contact_summary_borrow_1": "Du hast dir einen Gegenstand geliehen",
+  "overview_contact_summary_borrow_more": "Du hast dir :1 Gegenstände geliehen",
+  "overview_contact_summary_lend_0": "Du hast keinen Gegenstand verliehen",
+  "overview_contact_summary_lend_1": "Du hast einen Gegenstand verliehen",
+  "overview_contact_summary_lend_more": "Du hast :1 Gegenstände verliehen",
+
+  "pagename_select_contact" : "Wähle einen Kontakt",
+  "no_contacts" : "Keine Kontakt gefunden",
+  "no_contacts_permission" : "Keine Berechtigung :(",
+  "forward_without_contact" : "Ohne Kontakt weiter",
+  "forward_without_contact_button" : "ohne Kontakt",
+
+
+  "pagename_new_item" : "Neuer Eintrag",
+  "pagename_edit_item" : "Eintrag bearbeiten",
+  "item_contact_name" : "Kontaktname",
+  "item_summary" : "Worum geht es?",
+  "item_description" : "Beschreibung",
+  "item_due_date": "Rückgabedatum",
+  "item_switch_type": "Leihst du :1 etwas aus?",
+  "item_snackbar_saved" : "Gespeichert",
+
+  "delete_summary" : "Eintrag löschen",
+  "delete_description" : "Bist du sicher?",
+  "delete_successful" : "Gelöscht!",
+
+
+  "widmung" : "Meinem Vater gewidmet."
+
+
+
+
+}

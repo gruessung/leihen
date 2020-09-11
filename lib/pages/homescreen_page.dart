@@ -165,7 +165,7 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     Container(height: 20),
                     Text(
-                      "Leg gleich los",
+                      AppLocalizations.of(context).translate('empty_overview'),
                       style: TextStyle(
                         color: Theme.of(context).accentColor,
                         fontWeight: FontWeight.w300,

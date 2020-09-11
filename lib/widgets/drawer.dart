@@ -5,42 +5,33 @@ import 'package:oweapp4/pages/changelog_screen.dart';
 import 'package:oweapp4/routes/Routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
+import 'package:oweapp4/services/AppLocalizations.dart';
 
+/*
 class AppDrawer extends StatefulWidget {
 
   @override
   _AppDrawerState createState() => _AppDrawerState();
-}
+}*/
 
-class _AppDrawerState extends State<AppDrawer> {
-
-  String versionName = '';
-
-  Future<String> _getVersionName() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      versionName = packageInfo.version;
-    });
-  }
-
+class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    _getVersionName();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          _createHeader(),
+          _createHeader(context),
           _createDrawerItem(
               icon: Icons.home,
-              text: 'Übersicht',
+              text: AppLocalizations.of(context).translate('pagename_overview'),
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => MyApp()))),
           _createDrawerItem(
               icon: Icons.info_outline,
-              text: 'Über',
+              text: AppLocalizations.of(context).translate('pagename_about'),
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -48,25 +39,22 @@ class _AppDrawerState extends State<AppDrawer> {
           Divider(),
           _createDrawerItem(
               icon: Icons.fiber_new_outlined,
-              text: 'Changelog',
+              text:
+                  AppLocalizations.of(context).translate('pagename_changelog'),
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => ChangelogScreen()))),
           _createDrawerItem(
               icon: Icons.bug_report,
-              text: 'Fehler melden',
+              text: AppLocalizations.of(context).translate('pagename_bug'),
               onTap: () => _launchURL()),
-          ListTile(
-            title: Text(versionName),
-            onTap: () {},
-          ),
         ],
       ),
     );
   }
 
-  Widget _createHeader() {
+  Widget _createHeader(context) {
     return DrawerHeader(
         margin: EdgeInsets.zero,
         padding: EdgeInsets.zero,
@@ -77,7 +65,7 @@ class _AppDrawerState extends State<AppDrawer> {
           Positioned(
               bottom: 12.0,
               left: 16.0,
-              child: Text("Leihen",
+              child: Text(AppLocalizations.of(context).translate('app_name'),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,
@@ -110,3 +98,4 @@ class _AppDrawerState extends State<AppDrawer> {
     //}
   }
 }
+

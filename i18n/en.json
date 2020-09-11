@@ -1,0 +1,48 @@
+{
+  "app_name": "Lend",
+  "yes" : "Yes",
+  "no" : "No",
+  "input_validation_error" : "field required",
+  "no_data" : "No data found :(",
+
+
+  "pagename_overview" : "Overview",
+  "pagename_about" : "About",
+  "pagename_bug" : "Report a bug",
+  "pagename_changelog" : "What's new?",
+
+
+  "empty_overview": "Add your first item",
+  "overview_contact_summary_borrow_0": "You have not borrowed an item.",
+  "overview_contact_summary_borrow_1": "You have borrowed an item.",
+  "overview_contact_summary_borrow_more": "You have borrowed :1 items.",
+  "overview_contact_summary_lend_0": "You have not lent any item.",
+  "overview_contact_summary_lend_1": "You have lent an object.",
+  "overview_contact_summary_lend_more": "You have lent :1 items.",
+
+  "pagename_select_contact" : "Select a contact",
+  "no_contacts" : "No contacts found",
+  "no_contacts_permission" : "No permission :(",
+  "forward_without_contact" : "Create item without contact",
+  "forward_without_contact_button" : "no contact",
+
+
+  "pagename_new_item" : "Create Item",
+  "pagename_edit_item" : "Edit Item",
+  "item_contact_name" : "Name of your contact",
+  "item_summary" : "What's about?",
+  "item_description" : "Description",
+  "item_due_date": "Due date",
+  "item_switch_type": "Do you lend :1 something?",
+  "item_snackbar_saved" : "Saved",
+
+  "delete_summary" : "Delete item",
+  "delete_description" : "Are you sure?",
+  "delete_successful" : "Item deleted!",
+
+  "widmung" : "Dedicated to my father."
+
+
+
+
+}

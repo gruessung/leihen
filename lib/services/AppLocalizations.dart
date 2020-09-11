@@ -24,6 +24,7 @@ class AppLocalizations {
     // Load the language JSON file from the "lang" folder
     String jsonString =
     await rootBundle.loadString('i18n/${locale.languageCode}.json');
+    //await rootBundle.loadString('i18n/en.json');
     Map<String, dynamic> jsonMap = json.decode(jsonString);
 
     _localizedStrings = jsonMap.map((key, value) {
@@ -34,9 +35,25 @@ class AppLocalizations {
   }
 
   // This method will be called from every widget which needs a localized text
-  String translate(String key) {
-    return _localizedStrings[key];
+  String translate(String key, [List values]) {
+    if (values == null || values.isEmpty) {
+      return _localizedStrings[key];
+    }
+
+    String returnString = translate(key);
+    int index = 1;
+    values.forEach((element) {
+      returnString = returnString.replaceAll(':' + index.toString(), element);
+      index++;
+    });
+    return returnString;
   }
+
+  String getLanguageCode() {
+    return locale.languageCode;
+  }
+
+
 }
 
 class _AppLocalizationsDelegate

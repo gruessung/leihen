@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oweapp4/services/AppLocalizations.dart';
 import 'package:oweapp4/widgets/drawer.dart';
 import 'package:package_info/package_info.dart';
 
@@ -11,12 +12,16 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   String versionName = '';
+  String appName = '';
 
   _getBuildNumber() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    setState(()  {
-      versionName = packageInfo.version;
-    });
+    if(appName.isEmpty) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      setState(() {
+        versionName = packageInfo.version;
+        appName = packageInfo.appName;
+      });
+    }
   }
 
   @override
@@ -29,7 +34,7 @@ class _AboutPageState extends State<AboutPage> {
     );
 
     return Scaffold(
-        appBar: AppBar(title: Text('Über')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context).translate('pagename_about'))),
         drawer: AppDrawer(),
         body: Center(
             child: Column(
@@ -44,7 +49,7 @@ class _AboutPageState extends State<AboutPage> {
                 height: 5,
               ),
               Text(
-                "Leihen v" + this.versionName,
+                AppLocalizations.of(context).translate('app_name') + ' v' + this.versionName,
                 style: textStyle,
               ),
               Text("www.leihen.app", style: textStyle),
@@ -58,7 +63,7 @@ class _AboutPageState extends State<AboutPage> {
               Text("www.gruessung.eu", style: textStyle),
               Container(height: 50),
               Icon(Icons.favorite, color: Colors.redAccent),
-              Text("Meinem Vater gewidmet.", style: textStyle)
+              Text(AppLocalizations.of(context).translate('widmung'), style: textStyle)
             ])));
   }
 }

@@ -2,6 +2,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:oweapp4/pages/show_items_to_contact_screen.dart';
+import 'package:oweapp4/services/AppLocalizations.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MainCard extends StatefulWidget {
@@ -25,16 +26,15 @@ class MainCardState extends State<MainCard> {
   String sKontaktName;
   PermissionStatus permissionStatusHolder = null;
 
-
   Future<PermissionStatus> _getContactPermission() async {
     PermissionStatus permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.contacts);
     if (permission != PermissionStatus.granted &&
         permission != PermissionStatus.disabled &&
-    permission != PermissionStatus.restricted) {
+        permission != PermissionStatus.restricted) {
       Map<PermissionGroup, PermissionStatus> permissionStatus =
-      await PermissionHandler()
-          .requestPermissions([PermissionGroup.contacts]);
+          await PermissionHandler()
+              .requestPermissions([PermissionGroup.contacts]);
       return permissionStatus[PermissionGroup.contacts] ??
           PermissionStatus.unknown;
     } else {
@@ -43,25 +43,20 @@ class MainCardState extends State<MainCard> {
   }
 
   _loadContact() async {
-
     if (permissionStatusHolder == null) {
       PermissionStatus permissionStatus = await _getContactPermission();
       permissionStatusHolder = permissionStatus;
     }
 
-
-    if (contact == null ) {
-
-      if (oHalde["kontaktId"] !=  '0' && permissionStatusHolder == PermissionStatus.granted) {
-
+    if (contact == null) {
+      if (oHalde["kontaktId"] != '0' &&
+          permissionStatusHolder == PermissionStatus.granted) {
         Future<Iterable<Contact>> contacts = ContactsService.getContacts(
             query: oHalde["kontaktName"], withThumbnails: true);
         contacts.then((val) {
           setState(() {
             contact = val.elementAt(0);
-            sKontaktName = val
-                .elementAt(0)
-                .displayName;
+            sKontaktName = val.elementAt(0).displayName;
           });
         });
       } else {
@@ -105,7 +100,7 @@ class MainCardState extends State<MainCard> {
     _loadContact();
 
     if (sKontaktName != null) {
-     // print("Name: " + sKontaktName);
+      // print("Name: " + sKontaktName);
       return InkWell(
           onTap: _onTapped,
           child: Card(
@@ -142,22 +137,14 @@ class MainCardState extends State<MainCard> {
                             Text(sKontaktName,
                                 style: TextStyle(
                                     fontSize: 20, fontStyle: FontStyle.normal)),
-                            Text("Du hast dir " +
-                                ((oHalde["geliehen"] == 0)
-                                    ? "keinen Gegenstand"
-                                    : ((oHalde["geliehen"] == 1)
-                                        ? "einen Gegenstand"
-                                        : oHalde["geliehen"].toString() +
-                                            " Gegenstände ")) +
-                                " geliehen."),
-                            Text("Du hast " +
-                                ((oHalde["verliehen"] == 0)
-                                    ? "keinen Gegenstand"
-                                    : ((oHalde["verliehen"] == 1)
-                                        ? "einen Gegenstand"
-                                        : oHalde["verliehen"].toString() +
-                                            " Gegenstände ")) +
-                                " verliehen.")
+                            Text(AppLocalizations.of(context).translate(
+                                _getTranslationText(
+                                    'borrow', oHalde['geliehen']),
+                                [oHalde['geliehen'].toString()])),
+                            Text(AppLocalizations.of(context).translate(
+                                _getTranslationText(
+                                    'lend', oHalde['verliehen']),
+                                [oHalde['verliehen'].toString()]))
                           ],
                         )),
                   ],
@@ -186,5 +173,18 @@ class MainCardState extends State<MainCard> {
         ],
       ));
     }
+  }
+
+  /**
+   * Erzeugt den Translation Key für die Main Card
+   */
+  String _getTranslationText(String type, int cntItems) {
+    String transTextKey = '';
+    if (cntItems > 1) {
+      transTextKey = 'overview_contact_summary_${type}_more';
+    } else {
+      transTextKey = 'overview_contact_summary_${type}_${cntItems.toString()}';
+    }
+    return transTextKey;
   }
 }
