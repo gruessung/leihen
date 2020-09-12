@@ -1,6 +1,7 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:oweapp4/pages/show_items_to_contact_screen.dart';
 import 'package:oweapp4/services/AppLocalizations.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,20 +26,26 @@ class MainCardState extends State<MainCard> {
   Contact contact;
   String sKontaktName;
   PermissionStatus permissionStatusHolder = null;
+  bool alreadySearched = false;
 
   Future<PermissionStatus> _getContactPermission() async {
-    PermissionStatus permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.contacts);
-    if (permission != PermissionStatus.granted &&
-        permission != PermissionStatus.disabled &&
-        permission != PermissionStatus.restricted) {
-      Map<PermissionGroup, PermissionStatus> permissionStatus =
-          await PermissionHandler()
-              .requestPermissions([PermissionGroup.contacts]);
-      return permissionStatus[PermissionGroup.contacts] ??
-          PermissionStatus.unknown;
-    } else {
-      return permission;
+    try {
+      PermissionStatus permission = await PermissionHandler()
+          .checkPermissionStatus(PermissionGroup.contacts);
+      if (permission != PermissionStatus.granted &&
+          permission != PermissionStatus.disabled &&
+          permission != PermissionStatus.restricted) {
+        Map<PermissionGroup, PermissionStatus> permissionStatus =
+        await PermissionHandler()
+            .requestPermissions([PermissionGroup.contacts]);
+        return permissionStatus[PermissionGroup.contacts] ??
+            PermissionStatus.unknown;
+      } else {
+        return permission;
+      }
+    } catch(e) {
+      print('Error: ' + e.toString());
+      return PermissionStatus.unknown;
     }
   }
 
@@ -48,46 +55,29 @@ class MainCardState extends State<MainCard> {
       permissionStatusHolder = permissionStatus;
     }
 
-    if (contact == null) {
-      if (oHalde["kontaktId"] != '0' &&
+    if (contact == null && !alreadySearched) {
+      if (/*oHalde["kontaktId"] != '0' &&*/
           permissionStatusHolder == PermissionStatus.granted) {
         Future<Iterable<Contact>> contacts = ContactsService.getContacts(
             query: oHalde["kontaktName"], withThumbnails: true);
         contacts.then((val) {
           setState(() {
             contact = val.elementAt(0);
-            sKontaktName = val.elementAt(0).displayName;
+            sKontaktName = oHalde["kontaktName"];
+            alreadySearched = true;
           });
         });
       } else {
         setState(() {
           contact = null;
           sKontaktName = oHalde['kontaktName'];
+          alreadySearched = true;
         });
       }
     }
   }
 
   void _onTapped() {
-    /*showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Tapped!"),
-          content: new Text("ID: " + oHalde["kontaktName"]),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );*/
     Navigator.push(
         context,
         MaterialPageRoute(

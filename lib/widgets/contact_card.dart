@@ -25,7 +25,7 @@ class ContactCard extends StatelessWidget {
                 radius: 15,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(35),
-                    child: (contact.avatar.isNotEmpty)
+                    child: (contact.avatar != null && contact.avatar.isNotEmpty)
                         ? Image.memory(contact.avatar)
                         : Icon(Icons.face_outlined, color: Colors.white)),
               ),

@@ -2,15 +2,20 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:oweapp4/services/Database.dart';
 import 'package:oweapp4/widgets/contact_card.dart';
 import 'package:oweapp4/pages/input_item_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:oweapp4/services/AppLocalizations.dart';
 
 class NewItemSelectContactScreen extends StatefulWidget {
+  bool showAllContacts;
+
+  NewItemSelectContactScreen(this.showAllContacts);
+
   @override
   _NewItemSelectContactScreenState createState() =>
-      _NewItemSelectContactScreenState();
+      _NewItemSelectContactScreenState(showAllContacts);
 }
 
 class _NewItemSelectContactScreenState
@@ -18,20 +23,39 @@ class _NewItemSelectContactScreenState
   Iterable<Contact> _contacts;
   bool contactPermission = true;
   bool alreadyPullContacts = false;
+  List _currentContacts;
+  bool showAllContacts;
+
+  _NewItemSelectContactScreenState(this.showAllContacts);
+
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
 
   _getContacts() async {
     if (!alreadyPullContacts) {
       PermissionStatus permissionStatus = await _getContactPermission();
       if (permissionStatus == PermissionStatus.granted && _contacts == null) {
-        var contacts = await ContactsService.getContacts(query: "");
-        /*contacts.toList().sort((a, b) {
-        return a.displayName
-            .toLowerCase()
-            .compareTo(b.displayName.toLowerCase());
-      });*/
+        Iterable<Contact> contacts =
+            await ContactsService.getContacts(query: "");
+
+        List<Contact> contactList = List<Contact>();
+
+        contacts.forEach((element) {
+          if (!isNumeric(element.displayName.trim())) {
+            contactList.add(element);
+          }
+        });
+
+        contactList.sort((m1, m2) {
+          return m1.displayName.compareTo(m2.displayName);
+        });
 
         setState(() {
-          _contacts = contacts;
+          _contacts = contactList;
           contactPermission = true;
           alreadyPullContacts = true;
         });
@@ -42,6 +66,13 @@ class _NewItemSelectContactScreenState
         });
       }
     }
+  }
+
+  _getCurrentContacts() async {
+    List<Contact> c = await DBProvider.db.getCurrentUseContacts();
+    setState(() {
+      _currentContacts = c;
+    });
   }
 
   Future<PermissionStatus> _getContactPermission() async {
@@ -62,50 +93,93 @@ class _NewItemSelectContactScreenState
   @override
   void initState() {
     super.initState();
+    _getCurrentContacts();
     _getContacts();
+
+    if (_contacts != null && _currentContacts != null) {
+      List<Contact> tmp = _currentContacts;
+      _contacts.forEach((element) {
+        tmp.add(element);
+      });
+      setState(() {
+        _currentContacts = tmp;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('pagename_select_contact')),
+        title: Text(showAllContacts
+            ? AppLocalizations.of(context).translate('pagename_select_contact')
+            : AppLocalizations.of(context).translate('last_contacts')),
       ),
       body: SafeArea(
-          child: (_contacts != null || !contactPermission)
-              ? ((_contacts != null && _contacts?.length > 0)
-                  ? (ListView.builder(
-                      itemCount: _contacts?.length ?? 0,
-                      itemBuilder: (BuildContext context, int index) {
-                        Contact contact = _contacts?.elementAt(index);
-                        return GestureDetector(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      InputItemScreen(contact, null))),
-                          child: contact.displayName != null
-                              ? ContactCard(contact)
-                              : null,
-                        );
-                      }))
-                  : (NoContactsFoundWidget(
-                      contactPermission: contactPermission,
-                    )))
-              : (LoadingContactsWidget())),
+          child: (!showAllContacts &&
+                  _currentContacts != null &&
+                  _currentContacts.length > 0)
+              ? (LastContactsWidget(_currentContacts))
+              : (contactPermission) ? ((_contacts == null)
+              ? LoadingContactsWidget()
+              : ListView.builder(
+              itemCount: _contacts?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                Contact contact = _contacts?.elementAt(index);
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              InputItemScreen(contact, null))),
+                  child: contact.displayName != null
+                      ? ContactCard(contact)
+                      : null,
+                );
+              })) : NoContactsFoundWidget(contactPermission: contactPermission)),
       floatingActionButton: FloatingActionButton(
           child: Center(
               child: Text(
-                  AppLocalizations.of(context)
-                      .translate('forward_without_contact_button'),
+                  (showAllContacts || !contactPermission)
+                      ? AppLocalizations.of(context)
+                          .translate('forward_without_contact_button')
+                      : AppLocalizations.of(context).translate('all_contacts'),
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12))),
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      InputItemScreen(null, null)))),
+                      (showAllContacts || !contactPermission)
+                          ? InputItemScreen(null, null)
+                          : NewItemSelectContactScreen(true)))),
     );
+  }
+}
+
+class LastContactsWidget extends StatelessWidget {
+  List<Contact> _currentContacts;
+
+  LastContactsWidget(this._currentContacts);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: _currentContacts?.length ?? 0,
+        itemBuilder: (BuildContext context, int index) {
+          Contact contact = _currentContacts?.elementAt(index);
+          print("Kontakt: " + contact.displayName);
+          return GestureDetector(
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        InputItemScreen(contact, null))),
+            child: (contact != null && contact.displayName != null)
+                ? ContactCard(contact)
+                : null,
+          );
+        });
   }
 }
 

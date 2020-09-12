@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:oweapp4/services/Database.dart';
 import 'package:oweapp4/pages/changelog_screen.dart';
 import 'package:oweapp4/pages/input_item_screen.dart';
-import 'package:oweapp4/NI_SelectContactScreen.dart';
+import 'package:oweapp4/pages/select_contact_screen.dart';
 import 'package:oweapp4/pages/about_page.dart';
 import 'package:oweapp4/services/AppLocalizations.dart';
 import 'package:oweapp4/widgets/drawer.dart';
@@ -24,6 +24,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<dynamic> _homeScreenData;
   String _lastVersionNumber;
   bool firstStart = false;
+  bool dataFound = false;
 
   _getHomeScreenData() async {
     print("Call _getHomeScreenData()");
@@ -146,6 +147,7 @@ class HomeScreenState extends State<HomeScreen> {
             if (snapshot != null &&
                 snapshot.data != null &&
                 snapshot.data.length > 0) {
+              dataFound = true;
               return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -153,6 +155,7 @@ class HomeScreenState extends State<HomeScreen> {
                     return MainCard(oHalde: halde, context: context);
                   });
             } else {
+              dataFound = false;
               return Center(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +185,7 @@ class HomeScreenState extends State<HomeScreen> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      NewItemSelectContactScreen()))),
+                      NewItemSelectContactScreen( !dataFound)))),
     );
   }
 }

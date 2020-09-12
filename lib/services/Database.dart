@@ -1,3 +1,4 @@
+import 'package:contacts_service/contacts_service.dart';
 import 'package:oweapp4/services/HaldeModel.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -61,6 +62,19 @@ class DBProvider {
     res.forEach((c) {
       list.add(c);
 
+    });
+    return list;
+  }
+
+  Future<List<Contact>> getCurrentUseContacts() async {
+    final db = await database;
+    var res = await db.rawQuery('SELECT kontaktName FROM Halde GROUP BY kontaktName');
+
+    List<Contact> list = [];
+    res.forEach((c) {
+      Contact tmp = Contact();
+      tmp.displayName = c['kontaktName'];
+      list.add(tmp);
     });
     return list;
   }

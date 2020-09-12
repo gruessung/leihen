@@ -24,6 +24,8 @@
   "no_contacts_permission" : "Keine Berechtigung :(",
   "forward_without_contact" : "Ohne Kontakt weiter",
   "forward_without_contact_button" : "ohne Kontakt",
+  "last_contacts" : "Letzte Kontakte",
+  "all_contacts" : "Alle Kontakte",
 
 
   "pagename_new_item" : "Neuer Eintrag",

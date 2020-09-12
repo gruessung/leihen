@@ -25,7 +25,8 @@
   "no_contacts_permission" : "No permission :(",
   "forward_without_contact" : "Create item without contact",
   "forward_without_contact_button" : "no contact",
-
+  "last_contacts" : "Last used contacts",
+  "all_contacts" : "All contacts",
 
   "pagename_new_item" : "Create Item",
   "pagename_edit_item" : "Edit Item",
