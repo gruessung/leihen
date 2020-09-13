@@ -56,7 +56,7 @@ class DBProvider {
     final db = await database;
     var res = await db.rawQuery('SELECT t.kontaktName, t.kontaktId, '
         '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 0) AS geliehen, '
-        '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 1) AS verliehen FROM Halde t GROUP BY t.kontaktName, t.kontaktId');
+        '(SELECT COUNT(*) FROM Halde h WHERE h.kontaktName = t.kontaktName AND h.typ = 1) AS verliehen FROM Halde t GROUP BY t.kontaktName');
 
     var list = <Map>[];
     res.forEach((c) {
