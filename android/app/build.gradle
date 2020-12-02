@@ -52,7 +52,7 @@ android {
         versionName flutterVersionName
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
-
+/*
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -65,7 +65,7 @@ android {
         release {
             signingConfig signingConfigs.release
         }
-    }
+    }*/
 }
 
 flutter {
