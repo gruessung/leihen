@@ -106,4 +106,35 @@ class DBProvider {
 
     return list;
   }
+
+
+  /**
+   * Holt alle Datensätze aus der Datenbank
+   * @return List<Halde>
+   */
+  Future<List<Halde>> getAllItems() async {
+    final db = await database;
+    var res =
+    await db.query('Halde');
+
+    print("Starte: getAllItems");
+
+    List<Halde> list;
+    print("Anzahl Gesamt: " + res.length.toString());
+    if (res.isNotEmpty) {
+      print("res.isNotEmpty");
+      list = res.map((c) {
+        return Halde.fromJson(c);
+      }).toList();
+    } else {
+      print('res.empty!');
+      list = [];
+    }
+
+    print("Anzahl der gefundenen Datensätze: " + list.length.toString());
+
+    return list;
+  }
+
+
 }

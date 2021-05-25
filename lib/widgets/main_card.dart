@@ -56,7 +56,8 @@ class MainCardState extends State<MainCard> {
     }
 
     if (contact == null && !alreadySearched) {
-      if (/*oHalde["kontaktId"] != '0' &&*/
+      print(oHalde);
+      if (oHalde["kontaktId"] != '0' &&
           permissionStatusHolder == PermissionStatus.granted) {
         Future<Iterable<Contact>> contacts = ContactsService.getContacts(
             query: oHalde["kontaktName"], withThumbnails: true);
